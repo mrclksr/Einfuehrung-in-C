@@ -1,56 +1,54 @@
+/* Bindet die Standard-Ein-/Ausgabebibliothek ein (für printf, fgets usw.) */
 #include <stdio.h>
 
-/*
- * Konstanten für unser Menü
- */
-const int in_to_cm = 1;
-const int cm_to_in = 2;
-
-/* Umrechnungsfaktor für inch nach cm */
-const float in_to_cm_factor = 2.54;
+/* Bindet Funktionen zur Stringverarbeitung ein (z. B. strlen) */
+#include <string.h>
 
 int main() {
-  int choice;
-  /* float für Kommazahlen */
-  float value, result;
+  /* Legt ein Zeichenarray (String) mit Platz für 128 Zeichen an */
+  char input[128];
+  /* Zähler für gefundene Vokale, wird mit 0 initialisiert */
+  int vowels = 0;
 
-  printf("%d. inch to cm\n"
-         "%d. cm to inch\n"
-         "Your choice: ",
-         in_to_cm, cm_to_in);
+  printf("Text eingeben: ");
 
   /*
-   * Wir machen hier eine weniger ausführliche Fehlerprüfung. Statt den
-   * Rückgabewert von scanf() zwischenzuspeichern, prüfen wir den Wert
-   * direkt. Da wir einen Formatstring-Platzhalter (%d) angegeben haben,
-   * müsste uns scanf() in Erfolgsfall 1 zurückgeben. Des weiteren nutzen
-   * wir hier die lazy evaluation:
-   * Wenn der Rückgabewert von scanf() != 1 ist, wird gar nicht weiter
-   * geprüft. choice enthielte in diesem Fall ohnehin keine Information,
-   * sondern nur zufällige Daten.
-   * Wenn der Rückgabewert von scanf() == 1 ist, wird geprüft, ob choice
-   * weder in_to_cm noch cm_to_in ist, also eine ungültige Wahl.
+   * Liest eine Zeile vom Benutzer ein:
+   *  - input: Speicherort für die Eingabe
+   *  - sizeof(input): maximale Anzahl der zu lesenden Zeichen (Schutz
+   *    vor Überlauf)
+   *  - stdin: Eingabequelle (Tastatur)
+   * Wenn NULL zurückgegeben wird, ist ein Fehler oder EOF aufgetreten
    */
-  if (scanf("%d", &choice) != 1 || choice != in_to_cm && choice != cm_to_in) {
-    printf("Invalid choice\n");
+  if (fgets(input, sizeof(input), stdin) == NULL) {
+    /* I/O-Error oder ^D. Programm wird mit Fehlercode 1 beendet */
     return (1);
   }
-  if (choice == in_to_cm) {
-    printf("Enter value in inch: ");
-    if (scanf("%f", &value) != 1) {
-      printf("Invalid value\n");
-      return (1);
+
+  /* Bestimmt die Länge des eingegebenen Strings (ohne '\0') */
+  size_t len = strlen(input);
+
+  /* Schleife durchläuft jedes Zeichen im String */
+  for (int i = 0; i < len; i++) {
+    /* Prüft das aktuelle Zeichen input[i] */
+    switch (input[i]) {
+    case 'a': /* Falls das Zeichen ein 'a' ist */
+    case 'e': /* oder 'e' */
+    case 'i': /* oder 'i' */
+    case 'o': /* oder 'o' */
+    case 'u': /* oder 'u' */
+    case 'A': /* etc.     */
+    case 'E':
+    case 'I':
+    case 'O':
+    case 'U':
+      vowels++; /* Zähler für Vokale wird erhöht */
+      break;    /* Beendet den switch-Block für diesen Durchlauf */
     }
-    result = value * in_to_cm_factor;
-    printf("%f in = %f cm\n", value, result);
-  } else if (choice == cm_to_in) {
-    printf("Enter value in cm: ");
-    if (scanf("%f", &value) != 1) {
-      printf("Invalid value\n");
-      return (1);
-    }
-    result = value / in_to_cm_factor;
-    printf("%f cm = %f in\n", value, result);
   }
+
+  /* Gibt die Anzahl der gefundenen Vokale aus */
+  printf("%d Vokale gefunden\n", vowels);
+
   return (0);
 }

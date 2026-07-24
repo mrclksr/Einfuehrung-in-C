@@ -1,54 +1,49 @@
-/* Bindet die Standard-Ein-/Ausgabebibliothek ein (für printf, fgets usw.) */
+/*
+ * Bindet die Standard-Eingabe/Ausgabe-Bibliothek ein.
+ * Diese Bibliothek brauchen wir, damit wir z. B. printf() verwenden können.
+ */
 #include <stdio.h>
 
-/* Bindet Funktionen zur Stringverarbeitung ein (z. B. strlen) */
-#include <string.h>
-
 int main() {
-  /* Legt ein Zeichenarray (String) mit Platz für 128 Zeichen an */
-  char input[128];
-  /* Zähler für gefundene Vokale, wird mit 0 initialisiert */
-  int vowels = 0;
-
-  printf("Text eingeben: ");
+  /*
+   * Variable für die Summe über alle Zahlen in der Matrix.
+   * Wir starten mit 0, weil noch keine Werte addiert wurden.
+   */
+  int sum = 0;
 
   /*
-   * Liest eine Zeile vom Benutzer ein:
-   *  - input: Speicherort für die Eingabe
-   *  - sizeof(input): maximale Anzahl der zu lesenden Zeichen (Schutz
-   *    vor Überlauf)
-   *  - stdin: Eingabequelle (Tastatur)
-   * Wenn NULL zurückgegeben wird, ist ein Fehler oder EOF aufgetreten
+   * Hier wird eine 2D-Matrix (Tabelle) mit 4 Zeilen und 4 Spalten erstellt.
+   * 2D-Array bedeutet: Array von Arrays.
+   * Man kann es sich wie eine kleine Tabelle vorstellen.
    */
-  if (fgets(input, sizeof(input), stdin) == NULL) {
-    /* I/O-Error oder ^D. Programm wird mit Fehlercode 1 beendet */
-    return (1);
-  }
+  int matrix[4][4] = {
+      {1, 2, 2, 3}, /* Zeile 1 */
+      {3, 5, 2, 1}, /* Zeile 2 */
+      {7, 3, 4, 8}, /* Zeile 3 */
+      {6, 1, 6, 9}  /* Zeile 4 */
+  };
 
-  /* Bestimmt die Länge des eingegebenen Strings (ohne '\0') */
-  size_t len = strlen(input);
-
-  /* Schleife durchläuft jedes Zeichen im String */
-  for (int i = 0; i < len; i++) {
-    /* Prüft das aktuelle Zeichen input[i] */
-    switch (input[i]) {
-    case 'a': /* Falls das Zeichen ein 'a' ist */
-    case 'e': /* oder 'e' */
-    case 'i': /* oder 'i' */
-    case 'o': /* oder 'o' */
-    case 'u': /* oder 'u' */
-    case 'A': /* etc.     */
-    case 'E':
-    case 'I':
-    case 'O':
-    case 'U':
-      vowels++; /* Zähler für Vokale wird erhöht */
-      break;    /* Beendet den switch-Block für diesen Durchlauf */
+  /*
+   * Äußere Schleife: läuft durch alle Zeilen der Matrix.
+   * i ist der Zeilen-Index.
+   */
+  for (int i = 0; i < 4; i++) {
+    /*
+     * Innere Schleife: läuft durch alle Spalten einer Zeile.
+     * j ist der Spalten-Index.
+     */
+    for (int j = 0; j < 4; j++) {
+      /*
+       * Addiere den aktuellen Wert aus der Matrix zur Gesamtsumme hinzu.
+       * matrix[i][j] bedeutet:
+       *  - i = Zeile
+       *  - j = Spalte
+       * Beispiel: matrix[0][0] ist der erste Wert: 1
+       */
+      sum += matrix[i][j];
     }
   }
-
-  /* Gibt die Anzahl der gefundenen Vokale aus */
-  printf("%d Vokale gefunden\n", vowels);
+  printf("Summe: %d\n", sum);
 
   return (0);
 }
